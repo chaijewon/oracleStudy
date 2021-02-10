@@ -28,11 +28,12 @@ public class GenieMusic {
     {
     	try
     	{
+    		MusicDAO dao=new MusicDAO();
     		int k=1;
             for(int i=1;i<=2;i++)
             {
-            	//Document doc=Jsoup.connect("https://www.genie.co.kr/chart/top200?ditc=D&ymd=20210205&hh=17&rtm=Y&pg="+i).get();
-            	Document doc=Jsoup.connect("https://www.genie.co.kr/chart/genre?ditc=D&ymd=20210204&genrecode=M0100&pg="+i).get();
+            	//Document doc=Jsoup.connect("https://www.genie.co.kr/chart/top200?ditc=D&ymd=20210210&hh=14&rtm=Y&pg="+i).get();
+            	Document doc=Jsoup.connect("https://www.genie.co.kr/chart/genre?ditc=D&ymd=20210210&genrecode=M0100&pg="+i).get();
             	// title , singer , album , poster , state , idcrement, rank
             	Elements title=doc.select("tr.list a.title");// <a class="title">
             	Elements singer=doc.select("tr.list a.artist");
@@ -41,7 +42,7 @@ public class GenieMusic {
             	Elements etc=doc.select("tr.list span.rank");
             	for(int j=0;j<title.size();j++)
             	{
-            		System.out.println("순위:"+k++);
+            		System.out.println("순위:"+k);
             		System.out.println("제목:"+title.get(j).text());
             		System.out.println("가수:"+singer.get(j).text());
             		System.out.println("앨범:"+album.get(j).text());
@@ -65,6 +66,21 @@ public class GenieMusic {
             		System.out.println("등폭:"+id);
             		//System.out.println("상태:"+etc.get(j).text());
             		System.out.println("=============================================");
+            		// 데이터모아서 => MusicDAO로 전송 => 오라클에 Insert
+            		GenieMusicVO vo=new GenieMusicVO();
+            		vo.setNo(k);
+            		vo.setCno(1);
+            		vo.setTitle(title.get(j).text());
+            		vo.setSinger(singer.get(j).text());
+            		vo.setAlbum(album.get(j).text());
+            		vo.setPoster(poster.get(j).attr("src"));
+            		vo.setState(state);
+            		vo.setIdcrement(Integer.parseInt(id));
+            		
+            		dao.genieMusicInsert(vo);
+            		
+            		Thread.sleep(100);
+            		k++;
             	}
             }
     	}catch(Exception ex){ex.printStackTrace();}
