@@ -29,7 +29,7 @@ public class GenieMusic {
     	try
     	{
     		MusicDAO dao=new MusicDAO();
-    		int k=1;
+    		int k=201;
             for(int i=1;i<=2;i++)
             {
             	//Document doc=Jsoup.connect("https://www.genie.co.kr/chart/top200?ditc=D&ymd=20210210&hh=14&rtm=Y&pg="+i).get();
@@ -48,12 +48,20 @@ public class GenieMusic {
             		System.out.println("æŸπ¸:"+album.get(j).text());
             		System.out.println("∆˜Ω∫≈Õ:"+poster.get(j).attr("src"));
             		String str=etc.get(j).text();
+            		
             		// ¿Ø¡ˆ
             		// 2«œ∞≠
             		// 1ªÛΩ¬
-            		String state=str.replaceAll("[^∞°-∆R]", "");// «—±€¿ª ¡¶ø‹«œ∞Ì ≥™∏”¡ˆ¥¬ ∞¯πÈ 
+            		// new
             		String id="";
+            		
+            		String state=str.replaceAll("[^∞°-∆R|^a-z]", "");// «—±€¿ª ¡¶ø‹«œ∞Ì ≥™∏”¡ˆ¥¬ ∞¯πÈ 
+            		
             		if(state.equals("¿Ø¡ˆ"))
+            		{
+            			id="0";
+            		}
+            		else if(str.equals("new"))
             		{
             			id="0";
             		}
@@ -69,7 +77,7 @@ public class GenieMusic {
             		// µ•¿Ã≈Õ∏æ∆º≠ => MusicDAO∑Œ ¿¸º€ => ø¿∂Û≈¨ø° Insert
             		GenieMusicVO vo=new GenieMusicVO();
             		vo.setNo(k);
-            		vo.setCno(1);
+            		vo.setCno(2);
             		vo.setTitle(title.get(j).text());
             		vo.setSinger(singer.get(j).text());
             		vo.setAlbum(album.get(j).text());
