@@ -37,6 +37,7 @@ public class MusicDAO {
    // 4. 기능 => 뮤직데이터 50개를 받아서 저장 ==> 저장된 데이터 브라우저에서 읽어서 출력 
    public ArrayList<MusicVO> musicListData()
    {
+	   // return selectList("sql"); ==> mybatis
 	   ArrayList<MusicVO> list=new ArrayList<MusicVO>();
 	   try
 	   {
@@ -46,6 +47,7 @@ public class MusicDAO {
 		   String sql="SELECT no,title,poster,singer,album,state,idcrement "
 				     +"FROM genie_music "
 				     +"ORDER BY 1";
+				    
 		   ps=conn.prepareStatement(sql);// 전송준비 
 		   // 3. SQL문장 전송 
 		   ResultSet rs=ps.executeQuery();
@@ -89,6 +91,48 @@ public class MusicDAO {
 		   disConnection(); // 닫기 (오류,정상 => 무조건 오라클을 닫는다)
 	   }
 	   return list;
+   }
+   
+   public void empFindData(String ename)
+   {
+	   try
+	   {
+		   getConnection();
+		   String sql="SELECT ename,job,hiredate,sal "
+				     +"FROM emp "
+				     +"WHERE ename LIKE '%'||?||'%'";// LIKE
+		   ps=conn.prepareStatement(sql); // 오라클로 전송 
+		   // ?에 값을 채운다 
+		   ps.setString(1, ename);
+		   // 실행한 결과가를 가지고 온다 
+		   ResultSet rs=ps.executeQuery();
+		   // 데이터 출력 
+		   while(rs.next()) //rs.previous()
+		   {
+			    System.out.println("이름:"+rs.getString(1));
+			    System.out.println("직위:"+rs.getString(2));
+			    System.out.println("입사일:"+rs.getDate(3));
+			    System.out.println("급여:"+rs.getInt(4));
+			    System.out.println("==================");
+		   }
+		   rs.close();
+	   }catch(Exception ex)
+	   {
+		   ex.printStackTrace();
+	   }
+	   finally
+	   {
+		   disConnection();
+	   }
+   }
+   
+   public static void main(String[] args) {
+	  Scanner scan=new Scanner(System.in);
+	  System.out.print("이름 입력:");
+	  String ename=scan.next();
+	  // 출력
+	  MusicDAO dao=new MusicDAO();
+	  dao.empFindData(ename);
    }
    
 }

@@ -38,7 +38,7 @@
                 <tr>
                   <td><%=vo.getNo() %></td>
                   <td>
-                    <%
+                    <%-- <%
                         String state=vo.getState();
                         String str="";
                         if(state.equals("»ó½Â"))
@@ -58,7 +58,7 @@
                         	str="-";
                         }
                     %>
-                    <%=str %>
+                    <%=str %> --%>
                   </td>
                   <td><img src="<%=vo.getPoster() %>" width=30 height=30></td>  
                   <td><%=vo.getTitle() %></td>
