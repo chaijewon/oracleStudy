@@ -149,10 +149,159 @@ public class SawonDAO {
 	   }
 	   return vo;
    }
-   // 기능 3 => 신입사원 추가 => 매개변수 
-   // 기능 4 => 진급,급여변동 => 매개변수
-   // 기능 5 => 퇴사        => 매개변수 
-   // 기능 6 => 찾기        => ArrsyList
+   // 기능 3 => 신입사원 추가 => 매개변수  INSERT => void (오라클 자체에서 처리)
+   public void insert(SawonVO vo) // 전체 데이터 가지고 있는 클래스를 매개변수로 사용 (매개변수는 3개이상이면 => 클래스)
+   {
+	   try
+	   {
+		   // 정상 수행시 처리 
+		   // 1. 연결 
+		   getConnection();
+		   // 2. SQL문장 생성 
+		   String sql="INSERT INTO sawon VALUES("
+				     +"(SELECT NVL(MAX(sabun)+1,1) FROM sawon)," // 자동 증가 (Primary Key를 해결) = SEQUENCE
+				     +"?,?,?,?,SYSDATE,?)";
+		   // 전송 (오라클)
+		   ps=conn.prepareStatement(sql);
+		   // 실행전에 ?에 값을 채운다 
+		   ps.setString(1, vo.getName());
+		   ps.setString(2, vo.getSex());
+		   ps.setString(3, vo.getDept());
+		   ps.setString(4, vo.getJob());
+		   ps.setInt(5, vo.getPay());
+		   
+		   // 실행 명령
+		   ps.executeUpdate();
+		   
+	   }catch(Exception ex)
+	   {
+		   // 오류 확인 
+		   System.out.println(ex.getMessage());
+	   }
+	   finally
+	   {
+		   // try , catch와 관련없이 무조건 수행하는 문장 (데이터베이스,네트워크)
+		   // 오라클 닫기
+		   disConnection();
+	   }
+   }
+   // 기타 
+   public ArrayList<String> sawonGetDept()
+   {
+	   ArrayList<String> list=new ArrayList<String>();
+	   try
+	   {
+		   getConnection();
+		   String sql="SELECT DISTINCT dept FROM sawon";
+		   ps=conn.prepareStatement(sql);
+		   ResultSet rs=ps.executeQuery();
+		   while(rs.next())
+		   {
+			   String dept=rs.getString(1);
+			   list.add(dept);
+		   }
+		   rs.close();
+	   }catch(Exception ex) 
+	   {
+		   System.out.println(ex.getMessage());
+	   }
+	   finally
+	   {
+		   disConnection();
+	   }
+	   return list;
+   }
+   public ArrayList<String> sawonGetJob()
+   {
+	   ArrayList<String> list=new ArrayList<String>();
+	   try
+	   {
+		   getConnection();
+		   String sql="SELECT DISTINCT job FROM sawon";
+		   ps=conn.prepareStatement(sql);
+		   ResultSet rs=ps.executeQuery();
+		   while(rs.next())
+		   {
+			   String job=rs.getString(1);
+			   list.add(job);
+		   }
+		   rs.close();
+	   }catch(Exception ex) 
+	   {
+		   System.out.println(ex.getMessage());
+	   }
+	   finally
+	   {
+		   disConnection();
+	   }
+	   return list;
+   }
+   // 기능 4 => 진급,급여변동 => 매개변수  UPDATE => void (오라클 자체 처리)
+   public void update(int sabun,String dept,String job,int pay)
+   {
+	   try
+	   {
+		   getConnection();
+		   // SQL문장 제작 
+		   /*
+		    *    String sql="UPDATE sawon SET "
+		    *              +"dept='"+dept+"',"+job="+job+"',pay="+pay;
+		    */
+		   String sql="UPDATE sawon SET "
+				     +"dept=?,job=?,pay=? "
+				     +"WHERE sabun=?";
+		   // default 
+		   // setString() => ''   setInt()
+		   ps=conn.prepareStatement(sql);
+		   // ?에 값을 채운다 
+		   ps.setString(1, dept);
+		   ps.setString(2, job);
+		   ps.setInt(3, pay);
+		   ps.setInt(4, sabun);
+		   
+		   // 수정 명령 
+		   ps.executeUpdate();
+	   }catch(Exception ex)
+	   {
+		   System.out.println(ex.getMessage());
+	   }
+	   finally
+	   {
+		   disConnection();
+	   }
+   }
+   // 기능 5 => 퇴사        => 매개변수  DELEET => void (오라클 자체 처리)
+   public void delete(int sabun)
+   {
+	   try
+	   {
+		   // 연결
+		   getConnection();
+		   // SQL문장 제작
+		   String sql="DELETE FROM sawon "
+				     +"WHERE sabun=?"; // COMMIT을 수행 
+		   // 오라클 전송 
+		   ps=conn.prepareStatement(sql);
+		   // 실행전에 ?가 있으면 반드시 값을 채워준다 (인덱스에서 누락된 IN 또는 OUT 매개변수:: 1)
+		   ps.setInt(1, sabun);
+		   // 실행
+		   ps.executeUpdate(); 
+		   /*
+		    *   executeUpdate() => COMMIT ==> INSERT,UPDATE , DELETE(오라클 데이터가 변경시)
+		    *   executeQuery() => COMMIT이 없다 => SELECT
+		    */
+	   }catch(Exception ex)
+	   {
+		   System.out.println(ex.getMessage());
+	   }
+	   finally
+	   {
+		   // 해제
+		   disConnection();
+	   }
+   }
+   // 기능 6 => 찾기        => ArrsyList SELECT => 리턴형 (목록:ArrayList,한개 : VO)
+   
    
 }
 
