@@ -100,10 +100,10 @@ public class MusicDAO {
 		   getConnection();
 		   String sql="SELECT ename,job,hiredate,sal "
 				     +"FROM emp "
-				     +"WHERE ename LIKE '%'||?||'%'";// LIKE
+				     +"WHERE ename LIKE '%"+ename+"%'";// LIKE
 		   ps=conn.prepareStatement(sql); // 오라클로 전송 
 		   // ?에 값을 채운다 
-		   ps.setString(1, ename);
+		   //ps.setString(1, ename);
 		   // 실행한 결과가를 가지고 온다 
 		   ResultSet rs=ps.executeQuery();
 		   // 데이터 출력 
