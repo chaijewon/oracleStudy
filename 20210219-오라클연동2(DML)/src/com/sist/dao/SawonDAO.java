@@ -301,7 +301,47 @@ public class SawonDAO {
 	   }
    }
    // 기능 6 => 찾기        => ArrsyList SELECT => 리턴형 (목록:ArrayList,한개 : VO)
-   
+   public ArrayList<SawonVO> sawonFindData(String name)
+   {
+	   ArrayList<SawonVO> list=new ArrayList<SawonVO>();
+	   try
+	   {
+		   // 연결
+		   getConnection();
+		   // SQL문장 제작 
+		   String sql="SELECT * "
+				     +"FROM sawon "
+				     +"WHERE name LIKE '%'||?||'%'";
+		   // SELECT * FROM sawon WHERE REGEXP_LIKE(name , '"+name+"')
+		   ps=conn.prepareStatement(sql);
+		   // ?에 값을 채운다 
+		   ps.setString(1, name);
+		   // 실행후에 결과값을 가지고 온다 
+		   ResultSet rs=ps.executeQuery();
+		   while(rs.next())
+		   {
+			   SawonVO vo=new SawonVO();
+			   vo.setSabun(rs.getInt(1));
+			   vo.setName(rs.getString(2));
+			   vo.setSex(rs.getString(3));
+			   vo.setDept(rs.getString(4));
+			   vo.setJob(rs.getString(5));
+			   vo.setHiredate(rs.getDate(6));
+			   vo.setPay(rs.getInt(7));
+			   
+			   list.add(vo);
+		   }
+		   rs.close();
+	   }catch(Exception ex)
+	   {
+		   System.out.println(ex.getMessage());
+	   }
+	   finally
+	   {
+		   disConnection();// 해제 
+	   }
+	   return list;
+   }
    
 }
 

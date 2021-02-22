@@ -21,6 +21,19 @@ public class UserMain {
         }
         System.out.println("======================================");
         Scanner scan=new Scanner(System.in);
+        System.out.print("검색어를 입력하세요?");
+        String name=scan.next();
+        ArrayList<SawonVO> fList=dao.sawonFindData(name);
+        for(SawonVO vo:fList)
+        {
+        	System.out.println(vo.getSabun()+" "
+        			+vo.getName()+" "
+        			+vo.getSex()+" "
+        			+vo.getDept()+" "
+        			+vo.getJob()+" "
+        			+vo.getHiredate()+" "
+        			+vo.getPay());
+        }
         /*System.out.print("상세 볼 사번을 입력:");
         int sabun=scan.nextInt();
         SawonVO vo=dao.selectOne(sabun);
@@ -79,7 +92,7 @@ public class UserMain {
         System.out.println("사원 추가 완료");*/
         // 수정 
         // 1. 수정할 사번 선택 
-        System.out.print("수정할 사원의 사번 입력:");
+        /*System.out.print("수정할 사원의 사번 입력:");
         int sabun=scan.nextInt();
         
         // 2.부서 선택 
@@ -111,7 +124,7 @@ public class UserMain {
         
         // 유저로부터 받은 값을 DAO로 전송 => 오라클로 SQL제작후에 전송 
         dao.update(sabun, dept, job, pay); // UPDATE ==> COMMIT
-        System.out.println("사원 수정 완료!!");
+        System.out.println("사원 수정 완료!!");*/
 	} 
 
 }
